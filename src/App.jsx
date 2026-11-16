@@ -11,14 +11,14 @@ const attendees = [
 
 function FilterBar({ searchText, setSearchText }) {
   return (
-    <div>
-      <div>
+    <div className="flex flex-wrap gap-4 md:flex gap-4">
+      <div className="grid focus:">
         <label htmlFor="search">Search</label>
-        <input id="search" type="text" placeholder="Search by name or company" value={searchText} onChange={(e) => setSearchText(e.target.value)}/>
+        <input className="border border-gray-300 p-1 rounded-xl focus-visible:border-gray-500" id="search" type="text" placeholder="Search by name or company" value={searchText} onChange={(e) => setSearchText(e.target.value)}/>
       </div>
-      <div>
+      <div className="grid">
         <label htmlFor="city-filter">City</label>
-        <select id="city-filter">
+        <select id="city-filter" className="border border-gray-300 p-1 rounded-xl focus-visible:border-gray-500">
           <option>All</option>
           <option>Dubai</option>
           <option>Abu Dhabi</option>
@@ -26,17 +26,17 @@ function FilterBar({ searchText, setSearchText }) {
           <option>Doha</option>
         </select>
       </div>
-      <div>
+      <div className="grid">
         <label htmlFor="session-filter">Session</label>
-        <select id="session-filter">
+        <select id="session-filter" className="border border-gray-300 p-1 rounded-xl focus-visible:border-gray-500">
           <option>All</option>
           <option>Leading Teams</option>
           <option>Trust at Work</option>
         </select>
       </div>
-      <div>
-        <label htmlFor="status-filter">Status</label>
-        <select id="status-filter">
+      <div className="grid">
+        <label htmlFor="status-filter" >Status</label>
+        <select id="status-filter" className="border border-gray-300 p-1 rounded-xl focus-visible:border-gray-500">
           <option>All</option>
           <option>Attended</option>
           <option>Registered</option>
@@ -49,9 +49,9 @@ function FilterBar({ searchText, setSearchText }) {
 
 function StatCard({ label, value }) {
   return (
-    <div>
-        <div>{label}</div>
-        <div>{value}</div>
+    <div className="p-4 border border-gray-300 rounded-xl">
+        <div className="text-sm text-gray-500">{label}</div>
+        <div className="text-xl font-bold">{value}</div>
     </div>
   );
 }
@@ -65,7 +65,7 @@ function HeadlineNumbers({ attendees }) {
 
 
   return (
-    <div>
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
       <StatCard label="Total Registered" value={totalRegistered}/>
       <StatCard label="Attended" value={attended}/>
       <StatCard label="Cancelled" value={cancelled}/>
@@ -79,14 +79,14 @@ function AttendeeTable({ attendees, searchText }) {
     attendee.name.toLowerCase().includes(searchText.toLowerCase()) || attendee.company.toLowerCase().includes(searchText.toLowerCase()))
 
   const rows = filteredAttendees.map(attendee =>
-    <tr key={attendee.id}>
-      <td>{attendee.name}</td>
-      <td>{attendee.company}</td>
-      <td>{attendee.jobTitle}</td>
-      <td>{attendee.city}</td>
-      <td>{attendee.session}</td>
-      <td>{attendee.status}</td>
-      <td>{attendee.registeredOn}</td>
+    <tr key={attendee.id} className="hover:bg-gray-100">
+      <td className="px-4 py-2">{attendee.name}</td>
+      <td className="px-4 py-2">{attendee.company}</td>
+      <td className="px-4 py-2">{attendee.jobTitle}</td>
+      <td className="px-4 py-2">{attendee.city}</td>
+      <td className="px-4 py-2">{attendee.session}</td>
+      <td className="px-4 py-2">{attendee.status}</td>
+      <td className="px-4 py-2">{attendee.registeredOn}</td>
     </tr>
   );
 
@@ -94,13 +94,13 @@ function AttendeeTable({ attendees, searchText }) {
     <table>
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Company</th>
-          <th>Job Title</th>
-          <th>City</th>
-          <th>Session</th>
-          <th>Status</th>
-          <th>Registered on</th>
+          <th className="px-4 py-2 text-left">Name</th>
+          <th className="px-4 py-2 text-left">Company</th>
+          <th className="px-4 py-2 text-left">Job Title</th>
+          <th className="px-4 py-2 text-left">City</th>
+          <th className="px-4 py-2 text-left">Session</th>
+          <th className="px-4 py-2 text-left">Status</th>
+          <th className="px-4 py-2 text-left">Registered on</th>
         </tr>
       </thead>
       <tbody>{rows}</tbody>
@@ -112,7 +112,7 @@ export default function App() {
   const [searchText, setSearchText] = useState('');
   
   return (
-  <div>
+  <div className="flex flex-col gap-4 p-4 md:flex">
     <h1 className="text-3xl font-bold">Welcome to the dashboard</h1>
     <HeadlineNumbers attendees={attendees}/>
     <FilterBar searchText={searchText} setSearchText={setSearchText}/>
