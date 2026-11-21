@@ -1,6 +1,7 @@
 import { useState } from "react";
+import Papa from 'papaparse';
 
-const attendees = [
+const sampleAttendees = [
   { id: 1, name: "Omar Haddad", company: "Palmgate Logistics", jobTitle: "Operations Manager", city: "Dubai", session: "Leading Teams", status: "Attended", registeredOn: "2026-10-12" },
   { id: 2, name: "Layla Mansour", company: "Saltwater Media", jobTitle: "HR Director", city: "Abu Dhabi", session: "Trust at Work", status: "Registered" },
   { id: 3, name: "Khalid Rahman", company: "Harbor Lane Bank", jobTitle: "Team Lead", city: "Riyadh", session: "Leading Teams", status: "Cancelled", registeredOn: "2026-10-12"},
@@ -8,6 +9,26 @@ const attendees = [
   { id: 5, name: "Faisal Qasim", company: "Palmgate Logistics", jobTitle: "Supervisor", city: "Doha", session: "Leading Teams", status: "Attended" },
   { id: 6, name: "Mariam Yousef", company: "Saltwater Media", jobTitle: "Marketing Lead", city: "Abu Dhabi", session: "Trust at Work", status: "Registered" },
 ];
+
+function UploadArea({ setAttendees }) {
+    async function handleFileUpload(e) {
+    const file = e.target.files[0];
+    if(!file) return;
+
+    const text = await file.text();
+    const result = Papa.parse(text, { header: true, skipEmptyLines: true });
+
+    const rows = result.data.map((row, i) => ({ ...row, id: i + 1 }));
+    setAttendees(rows);
+  }
+  
+  return (
+  <div className="grid">
+    <label htmlFor="upload">Choose file to upload</label>
+    <input className="" id="upload" type="file" accept=".csv" onChange={handleFileUpload}/>
+  </div>
+  )
+}
 
 function FilterBar({ searchText, setSearchText }) {
   return (
@@ -48,6 +69,7 @@ function FilterBar({ searchText, setSearchText }) {
 }
 
 function StatCard({ label, value }) {
+
   return (
     <div className="p-4 border border-gray-300 rounded-xl">
         <div className="text-sm text-gray-500">{label}</div>
@@ -110,10 +132,12 @@ function AttendeeTable({ attendees, searchText }) {
 
 export default function App() {
   const [searchText, setSearchText] = useState('');
+  const [attendees, setAttendees] = useState(sampleAttendees);
   
   return (
   <div className="flex flex-col gap-4 p-4">
     <h1 className="text-3xl font-bold">Welcome to the dashboard</h1>
+    <UploadArea setAttendees={setAttendees}/>
     <HeadlineNumbers attendees={attendees}/>
     <FilterBar searchText={searchText} setSearchText={setSearchText}/>
     <AttendeeTable attendees={attendees} searchText={searchText}/>
