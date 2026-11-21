@@ -11,8 +11,8 @@ const attendees = [
 
 function FilterBar({ searchText, setSearchText }) {
   return (
-    <div className="flex flex-wrap gap-4 md:flex gap-4">
-      <div className="grid focus:">
+    <div className="flex flex-wrap gap-4">
+      <div className="grid">
         <label htmlFor="search">Search</label>
         <input className="border border-gray-300 p-1 rounded-xl focus-visible:border-gray-500" id="search" type="text" placeholder="Search by name or company" value={searchText} onChange={(e) => setSearchText(e.target.value)}/>
       </div>
@@ -112,7 +112,7 @@ export default function App() {
   const [searchText, setSearchText] = useState('');
   
   return (
-  <div className="flex flex-col gap-4 p-4 md:flex">
+  <div className="flex flex-col gap-4 p-4">
     <h1 className="text-3xl font-bold">Welcome to the dashboard</h1>
     <HeadlineNumbers attendees={attendees}/>
     <FilterBar searchText={searchText} setSearchText={setSearchText}/>
