@@ -59,7 +59,7 @@
     )
   }
 
-  function FilterBar({ searchText, setSearchText }) {
+  function FilterBar({ searchText, setSearchText, cityFilter, setCityFilter }) {
     return (
       <div className="flex flex-wrap gap-4">
         <div className="grid">
@@ -68,7 +68,7 @@
         </div>
         <div className="grid">
           <label htmlFor="city-filter">City</label>
-          <select id="city-filter" className="border border-gray-300 p-1 rounded-xl focus-visible:border-gray-500">
+          <select id="city-filter" className="border border-gray-300 p-1 rounded-xl focus-visible:border-gray-500" value={cityFilter} onChange={(e) => setCityFilter(e.target.value)}>
             <option>All</option>
             <option>Dubai</option>
             <option>Abu Dhabi</option>
@@ -125,9 +125,14 @@
     );
   }
 
-  function AttendeeTable({ attendees, searchText }) {
-    const filteredAttendees = attendees.filter(attendee => 
-      attendee.name.toLowerCase().includes(searchText.toLowerCase()) || attendee.company.toLowerCase().includes(searchText.toLowerCase()))
+  function AttendeeTable({ attendees, searchText, cityFilter}) {
+
+    const filteredAttendees = attendees.filter(attendee => {
+      const matchesSearch = attendee.name.toLowerCase().includes(searchText.toLowerCase()) || attendee.company.toLowerCase().includes(searchText.toLowerCase());
+      const matchesCity = cityFilter === "All" || attendee.city === cityFilter;
+
+      return matchesSearch && matchesCity;
+    });
 
     const rows = filteredAttendees.map(attendee =>
       <tr key={attendee.id} className="hover:bg-gray-100">
@@ -161,6 +166,7 @@
 
   export default function App() {
     const [searchText, setSearchText] = useState('');
+    const [cityFilter, setCityFilter] = useState('All');
     const [attendees, setAttendees] = useState(sampleAttendees);
     const [uploadError, setUploadError] = useState(null)
     
@@ -169,8 +175,8 @@
       <h1 className="text-3xl font-bold">Welcome to the dashboard</h1>
       <UploadArea setAttendees={setAttendees} uploadError={uploadError} setUploadError={setUploadError}/>
       <HeadlineNumbers attendees={attendees}/>
-      <FilterBar searchText={searchText} setSearchText={setSearchText}/>
-      <AttendeeTable attendees={attendees} searchText={searchText}/>
+      <FilterBar searchText={searchText} setSearchText={setSearchText} cityFilter={cityFilter} setCityFilter={setCityFilter}/>
+      <AttendeeTable attendees={attendees} searchText={searchText} cityFilter={cityFilter}/>
     </div>
     );
   }
