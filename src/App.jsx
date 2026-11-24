@@ -59,7 +59,11 @@
     )
   }
 
-  function FilterBar({ searchText, setSearchText, cityFilter, setCityFilter }) {
+  function FilterBar({attendees, searchText, setSearchText, cityFilter, setCityFilter, sessionFilter, setSessionFilter, statusFilter, setStatusFilter }) {
+    
+      const cities = attendees.map(attendee => attendee.city)
+      const citiesOptions = Array.from(new Set(cities)).sort()    
+    
     return (
       <div className="flex flex-wrap gap-4">
         <div className="grid">
@@ -70,15 +74,12 @@
           <label htmlFor="city-filter">City</label>
           <select id="city-filter" className="border border-gray-300 p-1 rounded-xl focus-visible:border-gray-500" value={cityFilter} onChange={(e) => setCityFilter(e.target.value)}>
             <option>All</option>
-            <option>Dubai</option>
-            <option>Abu Dhabi</option>
-            <option>Riyadh</option>
-            <option>Doha</option>
+            {citiesOptions.map(city => <option key={city}>{city}</option>)}
           </select>
         </div>
         <div className="grid">
           <label htmlFor="session-filter">Session</label>
-          <select id="session-filter" className="border border-gray-300 p-1 rounded-xl focus-visible:border-gray-500">
+          <select id="session-filter" className="border border-gray-300 p-1 rounded-xl focus-visible:border-gray-500" value={sessionFilter} onChange={(e) => setSessionFilter(e.target.value)}>
             <option>All</option>
             <option>Leading Teams</option>
             <option>Trust at Work</option>
@@ -86,7 +87,7 @@
         </div>
         <div className="grid">
           <label htmlFor="status-filter" >Status</label>
-          <select id="status-filter" className="border border-gray-300 p-1 rounded-xl focus-visible:border-gray-500">
+          <select id="status-filter" className="border border-gray-300 p-1 rounded-xl focus-visible:border-gray-500" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
             <option>All</option>
             <option>Attended</option>
             <option>Registered</option>
@@ -125,13 +126,15 @@
     );
   }
 
-  function AttendeeTable({ attendees, searchText, cityFilter}) {
+  function AttendeeTable({ attendees, searchText, cityFilter, sessionFilter, statusFilter}) {
 
     const filteredAttendees = attendees.filter(attendee => {
       const matchesSearch = attendee.name.toLowerCase().includes(searchText.toLowerCase()) || attendee.company.toLowerCase().includes(searchText.toLowerCase());
       const matchesCity = cityFilter === "All" || attendee.city === cityFilter;
+      const matchesSession = sessionFilter === "All" || attendee.session === sessionFilter;
+      const matchesStatus = statusFilter === "All" || attendee.status === statusFilter;
 
-      return matchesSearch && matchesCity;
+      return matchesSearch && matchesCity && matchesSession && matchesStatus;
     });
 
     const rows = filteredAttendees.map(attendee =>
@@ -167,6 +170,8 @@
   export default function App() {
     const [searchText, setSearchText] = useState('');
     const [cityFilter, setCityFilter] = useState('All');
+    const [sessionFilter, setSessionFilter] = useState('All');
+    const [statusFilter, setStatusFilter] = useState('All');
     const [attendees, setAttendees] = useState(sampleAttendees);
     const [uploadError, setUploadError] = useState(null)
     
@@ -175,8 +180,8 @@
       <h1 className="text-3xl font-bold">Welcome to the dashboard</h1>
       <UploadArea setAttendees={setAttendees} uploadError={uploadError} setUploadError={setUploadError}/>
       <HeadlineNumbers attendees={attendees}/>
-      <FilterBar searchText={searchText} setSearchText={setSearchText} cityFilter={cityFilter} setCityFilter={setCityFilter}/>
-      <AttendeeTable attendees={attendees} searchText={searchText} cityFilter={cityFilter}/>
+      <FilterBar attendees={attendees} searchText={searchText} setSearchText={setSearchText} cityFilter={cityFilter} setCityFilter={setCityFilter} sessionFilter={sessionFilter} setSessionFilter={setSessionFilter} statusFilter={statusFilter} setStatusFilter={setStatusFilter}/>
+      <AttendeeTable attendees={attendees} searchText={searchText} cityFilter={cityFilter} sessionFilter={sessionFilter} statusFilter={statusFilter}/>
     </div>
     );
   }
