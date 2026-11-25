@@ -59,10 +59,28 @@
     )
   }
 
+  function FilterSelect({label, id, value, setValue, options}){
+    return (
+      <div className="grid">
+        <label htmlFor={id}>{label}</label>
+        <select id={id} className="border border-gray-300 p-1 rounded-xl focus-visible:border-gray-500" value={value} onChange={(e) => setValue(e.target.value)}>
+          <option>All</option>
+          {options.map(option => <option key={option}>{option}</option>)}
+        </select>
+      </div>
+    );
+  }
+  
   function FilterBar({attendees, searchText, setSearchText, cityFilter, setCityFilter, sessionFilter, setSessionFilter, statusFilter, setStatusFilter }) {
     
       const cities = attendees.map(attendee => attendee.city)
-      const citiesOptions = Array.from(new Set(cities)).sort()    
+      const citiesOptions = Array.from(new Set(cities)).sort()
+
+      const sessions = attendees.map(attendee => attendee.session)
+      const sessionsOptions = Array.from(new Set(sessions)).sort()
+
+      const statuses = attendees.map(attendee => attendee.status)
+      const statusesOptions = Array.from(new Set(statuses)).sort()  
     
     return (
       <div className="flex flex-wrap gap-4">
@@ -70,30 +88,9 @@
           <label htmlFor="search">Search</label>
           <input className="border border-gray-300 p-1 rounded-xl focus-visible:border-gray-500" id="search" type="text" placeholder="Search by name or company" value={searchText} onChange={(e) => setSearchText(e.target.value)}/>
         </div>
-        <div className="grid">
-          <label htmlFor="city-filter">City</label>
-          <select id="city-filter" className="border border-gray-300 p-1 rounded-xl focus-visible:border-gray-500" value={cityFilter} onChange={(e) => setCityFilter(e.target.value)}>
-            <option>All</option>
-            {citiesOptions.map(city => <option key={city}>{city}</option>)}
-          </select>
-        </div>
-        <div className="grid">
-          <label htmlFor="session-filter">Session</label>
-          <select id="session-filter" className="border border-gray-300 p-1 rounded-xl focus-visible:border-gray-500" value={sessionFilter} onChange={(e) => setSessionFilter(e.target.value)}>
-            <option>All</option>
-            <option>Leading Teams</option>
-            <option>Trust at Work</option>
-          </select>
-        </div>
-        <div className="grid">
-          <label htmlFor="status-filter" >Status</label>
-          <select id="status-filter" className="border border-gray-300 p-1 rounded-xl focus-visible:border-gray-500" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-            <option>All</option>
-            <option>Attended</option>
-            <option>Registered</option>
-            <option>Cancelled</option>
-          </select>
-        </div>
+        <FilterSelect label="City" id="city-filter" value={cityFilter} setValue={setCityFilter} options={citiesOptions}/>
+        <FilterSelect label="Session" id="session-filter" value={sessionFilter} setValue={setSessionFilter} options={sessionsOptions}/>
+        <FilterSelect label="Status" id="status-filter" value={statusFilter} setValue={setStatusFilter} options={statusesOptions}/>
       </div>
     );
   }
