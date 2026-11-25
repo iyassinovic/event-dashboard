@@ -14,6 +14,7 @@
       async function handleFileUpload(e) {
       const file = e.target.files[0];
       if(!file) return;
+      e.target.value = ""
 
       if (!file.name.toLowerCase().endsWith(".csv")) {
         setUploadError(`${file.name} isn't a CSV. Save it as CSV and upload it again.`);
@@ -110,7 +111,7 @@
     const totalRegistered = attendees.length;
     const attended = attendees.filter(attendee => attendee.status === 'Attended').length;
     const cancelled = attendees.filter(attendee => attendee.status === 'Cancelled').length;
-    const attendanceRate = Math.round(attended / totalRegistered * 100);
+    const attendanceRate = Math.round(totalRegistered === 0 ? 0 : attended / totalRegistered * 100);
 
 
     return (
@@ -169,16 +170,24 @@
     const [cityFilter, setCityFilter] = useState('All');
     const [sessionFilter, setSessionFilter] = useState('All');
     const [statusFilter, setStatusFilter] = useState('All');
-    const [attendees, setAttendees] = useState(sampleAttendees);
+    const [attendees, setAttendees] = useState([]);
     const [uploadError, setUploadError] = useState(null)
     
     return (
     <div className="flex flex-col gap-4 p-4">
       <h1 className="text-3xl font-bold">Welcome to the dashboard</h1>
       <UploadArea setAttendees={setAttendees} uploadError={uploadError} setUploadError={setUploadError}/>
-      <HeadlineNumbers attendees={attendees}/>
-      <FilterBar attendees={attendees} searchText={searchText} setSearchText={setSearchText} cityFilter={cityFilter} setCityFilter={setCityFilter} sessionFilter={sessionFilter} setSessionFilter={setSessionFilter} statusFilter={statusFilter} setStatusFilter={setStatusFilter}/>
-      <AttendeeTable attendees={attendees} searchText={searchText} cityFilter={cityFilter} sessionFilter={sessionFilter} statusFilter={statusFilter}/>
+      {attendees.length === 0 ? 
+      <>
+        <p>Upload a CSV to see your attendees.</p>
+        <p>It needs these columns: name, company, jobTitle, city, session, status. registeredOn is optional.</p>
+        <button onClick={() => setAttendees(sampleAttendees)} type="button">Try with sample data</button>
+      </> : 
+        <>
+          <HeadlineNumbers attendees={attendees}/>
+          <FilterBar attendees={attendees} searchText={searchText} setSearchText={setSearchText} cityFilter={cityFilter} setCityFilter={setCityFilter} sessionFilter={sessionFilter} setSessionFilter={setSessionFilter} statusFilter={statusFilter} setStatusFilter={setStatusFilter}/>
+          <AttendeeTable attendees={attendees} searchText={searchText} cityFilter={cityFilter} sessionFilter={sessionFilter} statusFilter={statusFilter}/>
+        </>}
     </div>
     );
   }
